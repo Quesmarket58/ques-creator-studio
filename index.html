@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ques Creator Studio — AI Horror Content Generation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blood:#8B0000;--blood-bright:#cc0000;--blood-dark:#4a0000;--black:#000;--dark:#080808;--white:#fff;--gray:#666;--light-gray:#aaa;--gold:#FFD700;}
+body{font-family:'Rajdhani',sans-serif;background:var(--dark);color:var(--white);overflow-x:hidden;}
+.bg-skull{position:fixed;inset:0;background-image:url('https://raw.githubusercontent.com/Quesmarket58/ques-creator-studio/main/shorts_intro_template_1.png');background-size:cover;background-position:center;opacity:0.1;z-index:-2;}
+.bg-overlay{position:fixed;inset:0;background:radial-gradient(ellipse at center,rgba(139,0,0,0.25) 0%,rgba(0,0,0,0.95) 70%);z-index:-1;}
+.header{background:linear-gradient(135deg,rgba(0,0,0,0.98),rgba(74,0,0,0.4),rgba(0,0,0,0.98));border-bottom:2px solid var(--blood-bright);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 4px 30px rgba(139,0,0,0.4);}
+.header-left{display:flex;align-items:center;gap:12px;flex:1;}
+.yt-strip{height:48px;width:180px;object-fit:cover;border-radius:6px;border:1px solid rgba(139,0,0,0.5);}
+.h-title h1{font-family:'Cinzel',serif;font-size:1rem;font-weight:900;color:var(--white);letter-spacing:2px;text-shadow:0 0 20px rgba(139,0,0,0.8);}
+.h-title span{font-size:0.6rem;color:var(--blood-bright);letter-spacing:3px;text-transform:uppercase;font-weight:600;}
+.q-logo{width:40px;height:40px;border-radius:6px;border:1px solid var(--gold);object-fit:cover;}
+.btn{padding:10px 24px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:1px;text-transform:uppercase;border-radius:4px;transition:all 0.3s;text-decoration:none;display:inline-block;}
+.btn-blood{background:linear-gradient(135deg,var(--blood-dark),var(--blood),var(--blood-dark));color:var(--white);border:1px solid var(--blood-bright);}
+.btn-blood:hover{background:linear-gradient(135deg,var(--blood),var(--blood-bright),var(--blood));transform:translateY(-1px);}
+.btn-outline{background:transparent;color:var(--blood-bright);border:1px solid var(--blood-bright);}
+.btn-gold{background:linear-gradient(135deg,#b8960c,var(--gold),#b8960c);color:var(--black);}
+.hero{text-align:center;padding:60px 32px 40px;max-width:900px;margin:0 auto;}
+.horror-badge{display:inline-block;background:rgba(139,0,0,0.2);border:1px solid var(--blood-bright);color:var(--blood-bright);padding:6px 24px;border-radius:3px;font-size:0.75rem;letter-spacing:4px;text-transform:uppercase;margin-bottom:24px;font-weight:700;}
+.hero-img{width:150px;height:150px;border-radius:16px;border:2px solid var(--blood-bright);box-shadow:0 0 60px rgba(139,0,0,0.6);margin:0 auto 28px;display:block;object-fit:cover;}
+.hero h1{font-family:'Cinzel',serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:900;line-height:1.1;margin-bottom:16px;color:var(--white);text-shadow:0 0 40px rgba(139,0,0,0.8);}
+.hero h1 span{color:var(--blood-bright);}
+.hero-sub{font-size:1.1rem;color:var(--light-gray);margin-bottom:32px;line-height:1.6;font-family:'Open Sans',sans-serif;max-width:680px;margin-left:auto;margin-right:auto;}
+.hero-stats{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;}
+.stat{background:rgba(139,0,0,0.1);border:1px solid rgba(139,0,0,0.35);border-radius:8px;padding:14px 24px;text-align:center;}
+.stat .num{font-family:'Cinzel',serif;font-size:1.6rem;color:var(--blood-bright);font-weight:900;display:block;text-shadow:0 0 15px rgba(139,0,0,0.6);}
+.stat .lbl{font-size:0.7rem;color:var(--gray);letter-spacing:2px;text-transform:uppercase;font-family:'Open Sans',sans-serif;}
+.optin-wrap{background:linear-gradient(135deg,rgba(139,0,0,0.12),rgba(0,0,0,0.9));border-top:1px solid rgba(139,0,0,0.25);border-bottom:1px solid rgba(139,0,0,0.25);padding:60px 32px;}
+.optin-inner{max-width:600px;margin:0 auto;text-align:center;}
+.optin-inner h2{font-family:'Cinzel',serif;font-size:1.8rem;color:var(--white);margin-bottom:12px;}
+.optin-inner p{color:var(--gray);font-family:'Open Sans',sans-serif;font-size:0.95rem;margin-bottom:28px;line-height:1.6;}
+.features{max-width:1100px;margin:0 auto;padding:60px 32px;}
+.sec-label{text-align:center;font-family:'Cinzel',serif;font-size:0.75rem;color:var(--blood-bright);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;font-weight:700;}
+.sec-title{text-align:center;font-family:'Cinzel',serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:900;color:var(--white);margin-bottom:40px;}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
+.feat-card{background:linear-gradient(135deg,rgba(139,0,0,0.07),rgba(0,0,0,0.8));border:1px solid rgba(139,0,0,0.22);border-radius:10px;padding:28px 22px;transition:all 0.3s;}
+.feat-card:hover{border-color:var(--blood-bright);transform:translateY(-3px);}
+.feat-icon{font-size:2.5rem;margin-bottom:14px;display:block;}
+.feat-card h3{font-family:'Cinzel',serif;font-size:0.9rem;color:var(--blood-bright);margin-bottom:10px;font-weight:700;letter-spacing:1px;}
+.feat-card p{color:var(--gray);font-size:0.88rem;line-height:1.5;font-family:'Open Sans',sans-serif;}
+.pricing{max-width:1000px;margin:0 auto;padding:60px 32px;}
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}
+.price-card{background:linear-gradient(135deg,rgba(0,0,0,0.9),rgba(74,0,0,0.15));border:1px solid rgba(139,0,0,0.3);border-radius:12px;padding:36px 28px;text-align:center;position:relative;}
+.price-card.featured{border-color:var(--blood-bright);border-width:2px;}
+.feat-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--blood);color:var(--white);padding:4px 16px;border-radius:3px;font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;font-family:'Rajdhani',sans-serif;border:1px solid var(--blood-bright);}
+.price-card h3{font-family:'Cinzel',serif;color:var(--white);font-size:1rem;margin-bottom:8px;letter-spacing:2px;}
+.price-amt{font-family:'Cinzel',serif;font-size:3.2rem;color:var(--blood-bright);font-weight:900;line-height:1;}
+.price-per{color:var(--gray);font-size:0.85rem;font-family:'Open Sans',sans-serif;margin-bottom:20px;}
+.comm-note{color:var(--blood-bright);font-size:0.8rem;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:1px;margin-bottom:20px;}
+.price-feats{list-style:none;margin-bottom:24px;text-align:left;}
+.price-feats li{padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--light-gray);font-family:'Open Sans',sans-serif;font-size:0.88rem;display:flex;align-items:center;gap:8px;}
+.price-feats li::before{content:"💀";font-size:0.75rem;flex-shrink:0;}
+.price-feats li.locked{color:var(--gray);}
+.price-feats li.locked::before{content:"🔒";}
+.income-wrap{background:linear-gradient(135deg,rgba(139,0,0,0.12),rgba(0,0,0,0.8));border-top:1px solid rgba(139,0,0,0.2);border-bottom:1px solid rgba(139,0,0,0.2);padding:60px 32px;text-align:center;}
+.inc-inner{max-width:800px;margin:0 auto;}
+.inc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:32px 0;}
+.inc-card{background:rgba(0,0,0,0.5);border:1px solid rgba(139,0,0,0.3);border-radius:10px;padding:24px;}
+.inc-card .num{font-family:'Cinzel',serif;font-size:1.8rem;color:var(--blood-bright);font-weight:900;}
+.inc-card.gold .num{color:var(--gold);}
+.inc-card .lbl{color:var(--gray);font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;font-family:'Open Sans',sans-serif;margin-top:4px;}
+.cta-bot{text-align:center;padding:70px 32px;}
+.cta-bot h2{font-family:'Cinzel',serif;font-size:clamp(1.6rem,3vw,2.5rem);color:var(--white);margin-bottom:16px;}
+.cta-bot p{color:var(--light-gray);font-family:'Open Sans',sans-serif;font-size:1rem;margin-bottom:36px;}
+footer{background:var(--black);border-top:1px solid rgba(139,0,0,0.2);padding:28px;text-align:center;}
+footer p{color:var(--gray);font-size:0.82rem;font-family:'Open Sans',sans-serif;line-height:1.8;}
+footer a{color:var(--blood-bright);text-decoration:none;}
+#error-message,#success-message{display:none!important;}
+.sib-form-message-panel{display:none!important;}
+.sib-icon,svg.sib-icon,.progress-indicator__icon{display:none!important;width:0!important;height:0!important;}
+.sib-form{background:transparent!important;}
+#sib-container{background-color:rgba(10,0,0,0.95)!important;border-color:#cc0000!important;} #sib-container input, #sib-container input.input{background:#1a0000!important;color:#ffffff!important;caret-color:#FFD700!important;} #sib-container input::placeholder{color:#888888!important;}
+</style>
+</head>
+<body>
+<div class="bg-skull"></div>
+<div class="bg-overlay"></div>
+
+<header class="header">
+  <div class="header-left">
+    <img src="https://raw.githubusercontent.com/Quesmarket58/ques-creator-studio/main/youtube_banner_main_1.png" class="yt-strip" alt="Mateo Scary Que">
+    <div class="h-title">
+      <h1>Ques Creator Studio</h1>
+      <span>AI-Powered Horror Content</span>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <a href="https://quesmarket58.github.io/ques-creator-studio/ques-creator-studio.html" class="btn btn-outline" style="padding:8px 16px;font-size:0.8rem;">Login</a>
+    <a href="https://quesmarket58.github.io/ques-creator-studio/ques-creator-studio.html" class="btn btn-blood" style="padding:8px 16px;font-size:0.8rem;">Join Free</a>
+    <img src="https://raw.githubusercontent.com/Quesmarket58/ques-creator-studio/main/main_logo_square_1.png" class="q-logo" alt="Ques Entrepreneur">
+  </div>
+</header>
+
+<div class="hero">
+  <div class="horror-badge">💀 Powered by Galaxy AI &amp; Ques Entrepreneur</div>
+  <img src="https://raw.githubusercontent.com/Quesmarket58/ques-creator-studio/main/shorts_intro_template_1.png" class="hero-img" alt="Ques Creator Studio">
+  <h1>Create <span>Cinematic Horror</span><br>Content with AI</h1>
+  <p class="hero-sub">Professional AI-generated horror imagery built for dark content creators, YouTube channels and marketers. Describe it. Galaxy AI brings it to life.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="num">Free</span><span class="lbl">To Join</span></div>
+    <div class="stat"><span class="num">$27</span><span class="lbl">Creator/Mo</span></div>
+    <div class="stat"><span class="num">$47</span><span class="lbl">Pro/Mo</span></div>
+    <div class="stat"><span class="num">50%</span><span class="lbl">Affiliate Commission</span></div>
+  </div>
+</div>
+
+<div class="optin-wrap">
+  <div class="optin-inner">
+    <h2>Enter the Dark Studio</h2>
+    <p>Join free and start generating cinematic horror content powered by Galaxy AI. No credit card required.</p>
+    <link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
+    <div class="sib-form" style="text-align:center;">
+      <div id="sib-form-container" class="sib-form-container">
+        <div id="error-message" style="display:none!important;"></div>
+        <div id="success-message" style="display:none!important;"></div>
+        <div id="sib-container" class="sib-container--large sib-container--vertical" style="text-align:center;background-color:rgba(10,0,0,0.95);max-width:540px;border-radius:12px;border-width:2px;border-color:#cc0000;border-style:solid;direction:ltr;padding:8px;">
+          <form id="sib-form" method="POST" action="https://de564ac4.sibforms.com/serve/MUIFAL95vkNLFJNr-zl_iPpMkQieaKX1GprpP5AAdfjZJCYV0Yqtq4CZ4-fYhq--YhsAez859-Fem78FgMtcxp1z-5r_PLL61cx6vr4hdMUCiU0mlXiRrQ7TFOrTcyed0HxVKTHNEsQJ-eEbVLmrzVqYPqiJQ-M18sSkYKy4ACQ4I2IamWDFuDyJfiEYQ5Je7h8KCHuKMIqxOlZ1XA==" data-type="subscription">
+            <div style="padding:8px 0;"><p style="font-size:24px;text-align:center;font-weight:700;font-family:Cinzel,serif;color:#cc0000;">Enter the Dark Studio</p></div>
+            <div style="padding:4px 0 12px;"><p style="font-size:14px;text-align:center;font-family:Helvetica,sans-serif;color:#aaa;">Join free and start generating horror content with AI</p></div>
+            <div style="padding:8px 0;">
+              <div class="sib-input sib-form-block">
+                <div class="form__entry entry_block">
+                  <div class="form__label-row">
+                    <div class="entry__field">
+                      <input type="email" id="EMAIL" name="EMAIL" autocomplete="off" placeholder="Enter your email address" data-required="true" required style="display:block;width:100%;padding:14px 16px;font-size:16px;font-family:Arial,sans-serif;background-color:#1a0000;color:#ffffff;border:2px solid #cc0000;border-radius:6px;outline:none;box-sizing:border-box;-webkit-text-fill-color:#ffffff;opacity:1;"/>
+                    </div>
+                  </div>
+                  <label class="entry__error entry__error--primary" style="font-size:14px;text-align:left;font-family:Helvetica,sans-serif;color:#661d1d;background-color:#ffeded;border-radius:3px;border-color:#ff4949;"></label>
+                </div>
+              </div>
+            </div>
+            <div style="padding:8px 0;">
+              <button class="sib-form-block__button" style="font-size:16px;font-weight:700;font-family:Rajdhani,sans-serif;color:#fff;background:linear-gradient(135deg,#4a0000,#8B0000,#4a0000);border-radius:6px;border:1px solid #cc0000;padding:14px 40px;width:100%;letter-spacing:2px;text-transform:uppercase;cursor:pointer;" form="sib-form" type="submit">
+                💀 ENTER IF YOU DARE — FREE
+              </button>
+            </div>
+            <div style="padding:6px 0;"><p style="font-size:11px;color:#555;font-family:Helvetica,sans-serif;text-align:center;">Free to join · No spam ever · Unsubscribe anytime</p></div>
+            <input type="text" name="email_address_check" value="" class="input--hidden">
+            <input type="hidden" name="locale" value="en">
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      window.REQUIRED_CODE_ERROR_MESSAGE='Please choose a country code';
+      window.LOCALE='en';
+      window.EMAIL_INVALID_MESSAGE="The information provided is invalid.";
+      window.REQUIRED_ERROR_MESSAGE="This field cannot be left blank.";
+      window.GENERIC_INVALID_MESSAGE="The information provided is invalid.";
+      window.translation={common:{selectedList:'{quantity} list selected',selectedLists:'{quantity} lists selected',selectedOption:'{quantity} selected',selectedOptions:'{quantity} selected'}};
+      var AUTOHIDE=Boolean(0);
+    </script>
+    <script defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
+  </div>
+</div>
+
+<div class="features">
+  <div class="sec-label">What You Get</div>
+  <h2 class="sec-title">Everything a Dark Creator Needs</h2>
+  <div class="feat-grid">
+    <div class="feat-card"><span class="feat-icon">🎬</span><h3>Horror Studio</h3><p>Generate cinematic horror imagery — gothic scenes, supernatural creatures, psychological nightmares — powered by Galaxy AI.</p></div>
+    <div class="feat-card"><span class="feat-icon">🎨</span><h3>6 Horror Styles</h3><p>Gothic, Supernatural, Psychological, Creature, Apocalyptic and Slasher. Each style supercharges your prompts automatically.</p></div>
+    <div class="feat-card"><span class="feat-icon">💡</span><h3>Lighting Control</h3><p>Moonlit, Hellfire, Pure Darkness, Candlelit, Lightning or Bioluminescent atmospheres for your scenes.</p></div>
+    <div class="feat-card"><span class="feat-icon">📐</span><h3>Multi-Format Output</h3><p>YouTube landscape, Shorts portrait, square social or wide banner — sized perfectly for every platform.</p></div>
+    <div class="feat-card"><span class="feat-icon">⬇️</span><h3>HD Downloads</h3><p>Creator and Pro members download in full HD with no watermarks. Use anywhere online.</p></div>
+    <div class="feat-card"><span class="feat-icon">💰</span><h3>Affiliate Income</h3><p>Earn 50% recurring commissions. $13.50/month per Creator. $23.50/month per Pro referral.</p></div>
+  </div>
+</div>
+
+<div class="pricing">
+  <div class="sec-label">Choose Your Darkness</div>
+  <h2 class="sec-title">Simple Pricing. Deadly Results.</h2>
+  <div class="price-grid">
+    <div class="price-card">
+      <h3>Free</h3>
+      <div class="price-amt">$0</div>
+      <div class="price-per">forever</div>
+      <ul class="price-feats">
+        <li>5 AI generations per month</li>
+        <li>Horror Studio access</li>
+        <li>Watermarked downloads</li>
+        <li class="locked">Unlimited generations</li>
+        <li class="locked">HD downloads</li>
+        <li class="locked">Affiliate dashboard</li>
+      </ul>
+      <a href="https://quesmarket58.github.io/ques-creator-studio/ques-creator-studio.html" class="btn btn-outline" style="width:100%;padding:12px;text-align:center;">Join Free</a>
+    </div>
+    <div class="price-card featured">
+      <div class="feat-badge">Most Popular</div>
+      <h3>Creator</h3>
+      <div class="price-amt">$27</div>
+      <div class="price-per">per month</div>
+      <div class="comm-note">Earn $13.50/mo per referral</div>
+      <ul class="price-feats">
+        <li>Unlimited generations</li>
+        <li>All 3 modules</li>
+        <li>HD no-watermark downloads</li>
+        <li>Affiliate dashboard</li>
+        <li>Earn $13.50/mo per referral</li>
+        <li class="locked">Commercial license</li>
+      </ul>
+      <a href="https://quesmarket58.github.io/ques-creator-studio/ques-creator-studio.html" class="btn btn-blood" style="width:100%;padding:12px;text-align:center;">Get Creator</a>
+    </div>
+    <div class="price-card">
+      <h3>Pro</h3>
+      <div class="price-amt">$47</div>
+      <div class="price-per">per month</div>
+      <div class="comm-note" style="color:var(--gold);">Earn $23.50/mo per referral</div>
+      <ul class="price-feats">
+        <li>Everything in Creator</li>
+        <li>Commercial use license</li>
+        <li>White label option</li>
+        <li>Priority generation</li>
+        <li>Earn $23.50/mo per referral</li>
+      </ul>
+      <a href="https://quesmarket58.github.io/ques-creator-studio/ques-creator-studio.html" class="btn btn-gold" style="width:100%;padding:12px;text-align:center;">Go Pro</a>
+    </div>
+  </div>
+</div>
+
+<div class="income-wrap">
+  <div class="inc-inner">
+    <div class="sec-label">The Income Opportunity</div>
+    <h2 class="sec-title">Earn While You Create</h2>
+    <p style="color:var(--gray);font-family:'Open Sans',sans-serif;font-size:0.95rem;line-height:1.6;">Share your affiliate link. Every subscriber earns you recurring monthly income.</p>
+    <div class="inc-grid">
+      <div class="inc-card"><div class="num">$13.50</div><div class="lbl">Per Creator Referral/Mo</div></div>
+      <div class="inc-card gold"><div class="num">$23.50</div><div class="lbl">Per Pro Referral/Mo</div></div>
+      <div class="inc-card"><div class="num">50%</div><div class="lbl">Commission Rate</div></div>
+      <div class="inc-card"><div class="num">Monthly</div><div class="lbl">Recurring Payments</div></div>
+    </div>
+    <p style="color:var(--gray);font-family:'Open Sans',sans-serif;font-size:0.85rem;">PayPal, Venmo, Cash App or Zelle &middot; Minimum $15 &middot; First 5 business days each month</p>
+  </div>
+</div>
+
+<div class="cta-bot">
+  <h2>Ready to Go Dark? 💀</h2>
+  <p>Join free today. Start generating horror content immediately.</p>
+  <a href="https://quesmarket58.github.io/ques-creator-studio/ques-creator-studio.html" class="btn btn-blood" style="padding:18px 56px;font-size:1.1rem;">💀 Enter Ques Creator Studio Free</a>
+  <p style="color:var(--gray);font-size:0.82rem;margin-top:16px;font-family:'Open Sans',sans-serif;">Free to join &middot; No credit card required &middot; Cancel anytime</p>
+</div>
+
+<footer>
+  <img src="https://raw.githubusercontent.com/Quesmarket58/ques-creator-studio/main/main_logo_square_1.png" style="width:40px;height:40px;border-radius:6px;border:1px solid var(--gold);margin-bottom:14px;" alt="Q">
+  <p style="font-family:'Cinzel',serif;color:var(--blood-bright);font-size:0.9rem;margin-bottom:8px;">Ques Entrepreneur &mdash; Motivationals &amp; Ventures</p>
+  <p>Ques Creator Studio &middot; <a href="https://quesmarket58.github.io/ques-creator-studio/ques-creator-studio.html">Login</a> &middot; <a href="https://quesmarket58.github.io/ques-creator-studio/ques-creator-studio.html">Join Free</a></p>
+  <p style="margin-top:10px;">&copy; 2026 Ques Entrepreneur. All rights reserved.</p>
+</footer>
+</body>
+</html>
